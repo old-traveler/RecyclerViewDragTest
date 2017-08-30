@@ -8,12 +8,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileBatchCallback;
 import com.zxy.tiny.callback.FileCallback;
 
 import java.util.ArrayList;
@@ -101,31 +103,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {//从相册选择完图片
             //压缩图片
             ArrayList<String> imageData =  data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            for (int i = 0; i < imageData.size(); i++) {
-                images.add(0,imageData.get(i));
-            }
-            adapter.notifyDataSetChanged();
-//            String[] img = new String[imageData.size()];
 //            for (int i = 0; i < imageData.size(); i++) {
-//                img[i] = imageData.get(i);
+//                images.add(0,imageData.get(i));
 //            }
-//            Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-//            options.width= screenWidth/3;
-//            options.height= screenWidth/3;
-//            Tiny.getInstance().source(img).asFile().withOptions(options).compress(new FileCallback() {
-//                @Override
-//                public void callback(boolean isSuccess, String outfile) {
-//                    if (isSuccess){
-//                        for (String s : Arrays.asList(outfile)) {
-//                            images.add(0,s);
-//                        }
-//                        adapter.notifyDataSetChanged();
-//                        Toast.makeText(MainActivity.this, "添加数据", Toast.LENGTH_SHORT).show();
-//                    }else {
-//                        Toast.makeText(MainActivity.this, "出错", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
+//            adapter.notifyDataSetChanged();
+            String[] img = new String[imageData.size()];
+            for (int i = 0; i < imageData.size(); i++) {
+                img[i] = imageData.get(i);
+            }
+            Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+            options.width= screenWidth/3;
+            options.height= screenWidth/3;
+            Tiny.getInstance().source(img).batchAsFile().withOptions(options).batchCompress(new FileBatchCallback() {
+                @Override
+                public void callback(boolean isSuccess, String[] outfile) {
+                    if (isSuccess){
+                        for (String s : outfile) {
+                            images.add(0,s);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }else {
+                        Toast.makeText(MainActivity.this, "出错", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
         }
     }

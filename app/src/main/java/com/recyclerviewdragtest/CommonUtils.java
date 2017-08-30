@@ -17,4 +17,6 @@ public class CommonUtils {
         return MyApplication.getInstance().getResources().getDimensionPixelSize(dimensionId);
     }
 
+
+
 }
