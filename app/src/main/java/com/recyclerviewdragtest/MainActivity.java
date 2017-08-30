@@ -103,10 +103,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {//从相册选择完图片
             //压缩图片
             ArrayList<String> imageData =  data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-//            for (int i = 0; i < imageData.size(); i++) {
-//                images.add(0,imageData.get(i));
-//            }
-//            adapter.notifyDataSetChanged();
             String[] img = new String[imageData.size()];
             for (int i = 0; i < imageData.size(); i++) {
                 img[i] = imageData.get(i);
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 public void callback(boolean isSuccess, String[] outfile) {
                     if (isSuccess){
                         for (String s : outfile) {
-                            images.add(0,s);
+                            images.add(images.size()-1,s);
                         }
                         adapter.notifyDataSetChanged();
                     }else {
